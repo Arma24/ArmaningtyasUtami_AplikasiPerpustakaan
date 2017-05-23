@@ -43,17 +43,19 @@ public class login extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
 
         panel1.setBackground(new java.awt.Color(153, 153, 255));
+        panel1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         panel1.setLayout(null);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
         jLabel2.setText("Password");
         panel1.add(jLabel2);
-        jLabel2.setBounds(90, 200, 110, 30);
+        jLabel2.setBounds(90, 170, 110, 30);
 
         txtUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -61,9 +63,9 @@ public class login extends javax.swing.JFrame {
             }
         });
         panel1.add(txtUser);
-        txtUser.setBounds(30, 150, 220, 40);
+        txtUser.setBounds(30, 120, 220, 40);
         panel1.add(txtPass);
-        txtPass.setBounds(30, 230, 220, 40);
+        txtPass.setBounds(30, 200, 220, 40);
 
         panel2.setBackground(new java.awt.Color(0, 51, 153));
 
@@ -105,7 +107,7 @@ public class login extends javax.swing.JFrame {
             }
         });
         panel1.add(jButton2);
-        jButton2.setBounds(150, 310, 100, 40);
+        jButton2.setBounds(150, 260, 100, 40);
 
         jButton3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jButton3.setText("SIGN UP");
@@ -115,22 +117,32 @@ public class login extends javax.swing.JFrame {
             }
         });
         panel1.add(jButton3);
-        jButton3.setBounds(30, 310, 100, 40);
+        jButton3.setBounds(30, 260, 100, 40);
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
         jLabel4.setText("Username");
         panel1.add(jLabel4);
-        jLabel4.setBounds(90, 120, 130, 30);
+        jLabel4.setBounds(90, 90, 130, 30);
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/y.png"))); // NOI18N
         jLabel5.setText("jLabel5");
         panel1.add(jLabel5);
         jLabel5.setBounds(260, 70, 510, 340);
 
+        jButton4.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jButton4.setText("EXIT");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        panel1.add(jButton4);
+        jButton4.setBounds(30, 320, 220, 40);
+
         getContentPane().add(panel1);
         panel1.setBounds(0, 0, 770, 410);
 
-        pack();
+        setBounds(0, 0, 784, 442);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -143,7 +155,7 @@ public class login extends javax.swing.JFrame {
         Connection connection;
         PreparedStatement ps;
         try{
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/tiket_db?zeroDateTimeBehavior=convertToNull", "root", "");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pbo_ta?zeroDateTimeBehavior=convertToNull", "root", "");
             ps = connection.prepareStatement("SELECT `username`, `password` FROM `tb_akun` WHERE `username` = ? AND `password` = ?");
             ps.setString(1, txtUser.getText());
             ps.setString(2, txtPass.getText());
@@ -181,6 +193,10 @@ public class login extends javax.swing.JFrame {
     private void txtUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUserActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtUserActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -221,6 +237,7 @@ public class login extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

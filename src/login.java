@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
  */
 public class login extends javax.swing.JFrame {
 
+    static String user;
     /**
      * Creates new form login
      */
@@ -142,7 +143,8 @@ public class login extends javax.swing.JFrame {
         getContentPane().add(panel1);
         panel1.setBounds(0, 0, 770, 410);
 
-        setBounds(0, 0, 784, 442);
+        setSize(new java.awt.Dimension(784, 442));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -152,25 +154,27 @@ public class login extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        Connection connection;
-        PreparedStatement ps;
-        try{
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pbo_ta?zeroDateTimeBehavior=convertToNull", "root", "");
-            ps = connection.prepareStatement("SELECT `username`, `password` FROM `tb_akun` WHERE `username` = ? AND `password` = ?");
-            ps.setString(1, txtUser.getText());
-            ps.setString(2, txtPass.getText());
-            ResultSet result = ps.executeQuery();
-            if(result.next()){
-                new frmMain().show();
-                this.dispose();
-            }
-            else {
-                JOptionPane.showMessageDialog(rootPane, "Salah!");
-                txtPass.setText("");
-                txtUser.requestFocus();
-            }
-        } catch (SQLException ex){
-            JOptionPane.showMessageDialog(rootPane, "gagal");
+        Connection connection; 
+        PreparedStatement ps; 
+        try { 
+            connection = DriverManager.getConnection("jdbc:mysql://localhost/pbo_ta?zeroDateTimeBehavior=convertToNull", "root", ""); 
+            ps = connection.prepareStatement("SELECT * FROM `tb_akun` WHERE `username` = ? AND `password` = ?"); 
+            ps.setString(1, txtUser.getText()); 
+            ps.setString(2, txtPass.getText()); 
+            ResultSet result =ps.executeQuery(); 
+            if(result.next()){ 
+                new frmMain().show(); 
+                user = txtUser.getText(); //perlu deklarasi user diclass utama. 
+                this.dispose(); 
+            } 
+            else{ 
+                JOptionPane.showMessageDialog(rootPane, "Salah!"); 
+                txtUser.setText(""); 
+                txtPass.requestFocus();
+                } 
+        }
+        catch (SQLException ex){ 
+            JOptionPane.showMessageDialog(rootPane,"Gagal!"); 
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 

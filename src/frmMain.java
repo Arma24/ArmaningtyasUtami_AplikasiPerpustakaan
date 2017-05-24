@@ -1,12 +1,16 @@
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -21,12 +25,17 @@ import javax.swing.table.DefaultTableModel;
  */
 public class frmMain extends javax.swing.JFrame {
 
+    String nol_jam, nol_menit, nol_detik;
     /**
      * Creates new form frmMain
      */
     public frmMain() {
         initComponents();
         selectData();
+        String user = null;
+        petugas.setText(user);
+        setTanggal();
+        setJam();
     }
 
     /**
@@ -43,6 +52,10 @@ public class frmMain extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        petugas = new javax.swing.JTextField();
+        tgl = new javax.swing.JLabel();
+        hasil = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -68,8 +81,16 @@ public class frmMain extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
         getContentPane().setLayout(null);
 
         jPanel1.setBackground(new java.awt.Color(102, 102, 255));
@@ -86,6 +107,33 @@ public class frmMain extends javax.swing.JFrame {
         jLabel2.setText("Open A Book, Open The World !!!");
         jPanel1.add(jLabel2);
         jLabel2.setBounds(260, 50, 280, 30);
+
+        jLabel10.setFont(new java.awt.Font("Cambria Math", 1, 14)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel10.setText("Petugas :");
+        jPanel1.add(jLabel10);
+        jLabel10.setBounds(50, 10, 110, 30);
+
+        petugas.setEditable(false);
+        petugas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                petugasActionPerformed(evt);
+            }
+        });
+        jPanel1.add(petugas);
+        petugas.setBounds(30, 40, 110, 30);
+
+        tgl.setFont(new java.awt.Font("Calibri Light", 1, 12)); // NOI18N
+        tgl.setForeground(new java.awt.Color(255, 255, 255));
+        tgl.setText("Tanggal");
+        jPanel1.add(tgl);
+        tgl.setBounds(660, 10, 110, 30);
+
+        hasil.setFont(new java.awt.Font("Calibri Light", 1, 12)); // NOI18N
+        hasil.setForeground(new java.awt.Color(255, 255, 255));
+        hasil.setText("Jam");
+        jPanel1.add(hasil);
+        hasil.setBounds(660, 50, 110, 30);
 
         getContentPane().add(jPanel1);
         jPanel1.setBounds(0, -1, 810, 90);
@@ -222,7 +270,7 @@ public class frmMain extends javax.swing.JFrame {
         getContentPane().add(jPanel2);
         jPanel2.setBounds(0, 80, 810, 310);
 
-        jPanel3.setBackground(new java.awt.Color(102, 102, 255));
+        jPanel3.setBackground(new java.awt.Color(153, 153, 255));
         jPanel3.setLayout(null);
 
         table.setModel(new javax.swing.table.DefaultTableModel(
@@ -244,12 +292,25 @@ public class frmMain extends javax.swing.JFrame {
         jScrollPane2.setViewportView(table);
 
         jPanel3.add(jScrollPane2);
-        jScrollPane2.setBounds(10, 30, 780, 180);
+        jScrollPane2.setBounds(10, 20, 780, 180);
 
         getContentPane().add(jPanel3);
-        jPanel3.setBounds(0, 390, 810, 240);
+        jPanel3.setBounds(0, 440, 810, 220);
 
-        setBounds(0, 0, 818, 668);
+        jPanel4.setBackground(new java.awt.Color(102, 102, 255));
+        jPanel4.setLayout(null);
+
+        jLabel7.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel7.setText("Table Data Peminjaman Buku di Perpustakaan Armania");
+        jPanel4.add(jLabel7);
+        jLabel7.setBounds(180, 10, 440, 30);
+
+        getContentPane().add(jPanel4);
+        jPanel4.setBounds(0, 390, 810, 50);
+
+        setSize(new java.awt.Dimension(818, 697));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
@@ -265,7 +326,7 @@ public class frmMain extends javax.swing.JFrame {
         else{
             String KB = "";
                 if(pelajaran.isSelected()) {
-                    KB = "Buku Pelajaran";
+                    KB = "Pelajaran";
                 }
                 else{
                     KB = "Novel";
@@ -322,7 +383,7 @@ public class frmMain extends javax.swing.JFrame {
             kelas.setText(table.getValueAt(baris, 2).toString());
             
         String kb = table.getValueAt(baris, 3).toString();
-        if(kb.equals("Buku Pelajaran")){
+        if(kb.equals("Pelajaran")){
             pelajaran.setSelected(true);
         }
         if(kb.equals("Novel"))
@@ -336,12 +397,8 @@ public class frmMain extends javax.swing.JFrame {
     }//GEN-LAST:event_tableMouseClicked
 
     private void editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editActionPerformed
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String pinjam = dateFormat.format(tglpinjam.getDate());
-        String kembali = dateFormat.format(tglkembali.getDate());
-        
+ 
         int baris = table.getSelectedRow();
-        String NIS = table.getValueAt(baris, 0).toString();
         
         if("".equals(nis.getText()) || "".equals(nama.getText()) ||
             "".equals(kelas.getText()) || "".equals(judul.getText())) {
@@ -350,7 +407,7 @@ public class frmMain extends javax.swing.JFrame {
          else{
              String KB = "";
              if(pelajaran.isSelected()){
-                 KB = "Buku Pelajaran";
+                 KB = "Pelajaran";
              }
              else {
                  KB = "Novel";
@@ -361,8 +418,6 @@ public class frmMain extends javax.swing.JFrame {
                      + "Kelas='"+kelas.getText()+"',"
                      + "KategoriBuku='"+KB+"',"
                      + "JudulBuku='"+judul.getText()+"',"
-                     + "tglpinjam='"+pinjam+"',"
-                     + "tglkembali='"+kembali+"',"
                      + "WHERE NIS='"+nis.getText()+"'";
              int status = KoneksiDB.execute(SQL);
              if(status == 1){
@@ -370,28 +425,39 @@ public class frmMain extends javax.swing.JFrame {
                  selectData();
              }
              else{
-                 JOptionPane.showMessageDialog(this, "Data gagal diupdate", "Gagal", JOptionPane.WARNING_MESSAGE);
+                 JOptionPane.showMessageDialog(this, "Data berhasil diupdate", "Gagal", JOptionPane.INFORMATION_MESSAGE);
              }
          }
     }//GEN-LAST:event_editActionPerformed
 
     private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
         int baris = table.getSelectedRow();
-        if (baris != -1){
-            String id = table.getValueAt(baris, 0).toString();
-            String SQL = "DELETE FROM tb_siswa WHERE NIS='"+nis+"'";
+        if(baris != -1){
+            String NIS = table.getValueAt(baris, 0).toString();
+            String SQL = "DELETE FROM tb_siswa WHERE NIS='"+NIS+"'";
             int status = KoneksiDB.execute(SQL);
-            if (status==1){
+            if(status==1){
                 JOptionPane.showMessageDialog(this, "Data berhasil dihapus", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-            } else {
+            }
+            else{
                 JOptionPane.showMessageDialog(this, "Data gagal dihapus", "Gagal", JOptionPane.WARNING_MESSAGE);
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Pilih Baris Data Terlebih dahulu", "Error", JOptionPane.WARNING_MESSAGE);
         }
-
+        else{
+            JOptionPane.showMessageDialog(this, "Pilih Baris Data Terlebih Dahulu", "Error", JOptionPane.WARNING_MESSAGE);
+        }
+        
         selectData();
     }//GEN-LAST:event_deleteActionPerformed
+
+    private void petugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_petugasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_petugasActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        String user1 = login.user;
+        petugas.setText(user1);
+    }//GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments
@@ -435,18 +501,22 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JButton delete;
     private javax.swing.JButton edit;
     private javax.swing.JButton exit;
+    private javax.swing.JLabel hasil;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField judul;
     private javax.swing.JTextField kelas;
@@ -454,9 +524,11 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JTextField nis;
     private javax.swing.JRadioButton novel;
     private javax.swing.JRadioButton pelajaran;
+    private javax.swing.JTextField petugas;
     private javax.swing.JButton print;
     private javax.swing.JButton save;
     private javax.swing.JTable table;
+    private javax.swing.JLabel tgl;
     private com.toedter.calendar.JDateChooser tglkembali;
     private com.toedter.calendar.JDateChooser tglpinjam;
     // End of variables declaration//GEN-END:variables
@@ -472,8 +544,8 @@ public class frmMain extends javax.swing.JFrame {
                 String NamaSiswa = rs.getString(2);
                 String Kelas = rs.getString(3);
                 String KB = "";
-                if("Buku Pelajaran".equals(rs.getString(4))) {
-                    KB = "Buku Pelajaran";
+                if("Pelajaran".equals(rs.getString(4))) {
+                    KB = "Pelajaran";
                 }
                 else{
                     KB = "Novel";
@@ -489,5 +561,42 @@ public class frmMain extends javax.swing.JFrame {
             Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
         }
         table.setModel(dtm);
+    }
+
+    private void setTanggal() {
+       java.util.Date skrg = new java.util.Date();
+       java.text.SimpleDateFormat kal = new
+       java.text.SimpleDateFormat("dd/MM/yyyy");
+       tgl.setText(kal.format(skrg));
+    }
+
+    private void setJam() {
+        ActionListener taskPerformer = new ActionListener(){
+        public void actionPerformed(ActionEvent evt){
+                String nol_jam = "";
+                String nol_menit = "";
+                String nol_detik = "";
+                
+                
+                Date dt = new Date();
+                int nilai_jam = dt.getHours();
+                int nilai_menit = dt.getMinutes();
+                int nilai_detik = dt.getSeconds();
+                
+                if (nilai_jam<=9){
+                    nol_jam = "0";
+                } if (nilai_menit <= 9) {
+                    nol_menit = "0";
+                } if (nilai_detik <= 9){
+                    nol_detik = "0";
+                }
+                String jam = nol_jam + Integer.toString(nilai_jam);
+                String menit = nol_menit + Integer.toString(nilai_menit);
+                String detik = nol_detik + Integer.toString(nilai_detik);
+                hasil.setText(jam+":"+menit+":"+detik);
+            }
+
+        } ;
+        new Timer(100, taskPerformer).start();
     }
 }
